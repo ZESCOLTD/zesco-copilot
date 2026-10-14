@@ -74,6 +74,7 @@ facts, figures, or sources.
 | TC-06 | Conversation persistence across reload | ✅ Pass |
 | TC-07 | Multi-turn context retention | ✅ Pass |
 | TC-08 | Grounding / out-of-scope handling | ✅ Pass |
+| TC-09 | Schema discovery + source-database attribution | ✅ Pass |
 
 ---
 
@@ -194,12 +195,31 @@ failed and asked for the correct table/source instead of fabricating numbers.
 
 ---
 
+### TC-09 — Schema discovery + source-database attribution
+**Objective:** The agent can discover the right table itself (no need to name it)
+and clearly tells the user **which database** an answer came from.
+**Steps:** Ask a complaints question against the live Oracle OMS database, e.g.
+*"How many complaints are recorded in the Oracle complaints table?"*
+**Expected:**
+- The agent uses `list_tables` / `describe_table` to find the object, then
+  `query_database`.
+- The tool-step chip shows the **engine**, e.g. `query_database (oracle): …`.
+- The answer states the source database and table.
+**Actual:** The agent discovered `GENERALCOMPLAINTS.COMPLAINTS`, ran a read-only
+`SELECT COUNT(*)`, and answered **"There are 1,092 complaints …"** with the chip
+showing `query_database (oracle)`. A neutral question ("current date according to
+the database?") was answered *"According to the Oracle database …"*.
+**Status:** ✅ Pass
+
+![Database engine shown in the tool chip and answer](images/06-db-oracle.png)
+
+---
+
 ## 5. Observations & recommendations
 
-- **Non-blocking:** The agent must be told a table/column name it doesn't know;
-  it cannot yet browse schema. A future enhancement could expose safe
-  `list_tables` / `describe_table` read-only helpers, or pre-load a schema hint,
-  so users need not name tables. (It still refused to fabricate — see TC-08.)
+- **Resolved:** The agent can now discover schema with read-only `list_tables` /
+  `describe_table` helpers, so users need not name tables (see TC-09). Very
+  broad questions may still take several tool steps (cap: `KB_AGENT_MAX_STEPS`).
 - **Non-blocking:** Restored (historical) messages show the final answer and
   citations but not the transient tool-step chips, which appear during live
   streaming only.

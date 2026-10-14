@@ -49,14 +49,14 @@
             display:flex; align-items:center; justify-content:center; font-size:14px; }
         .turn.user .avatar { background:var(--user); }
         .turn.bot .avatar { background:var(--accent); color:var(--accent-ink); }
-        .body { flex:1; min-width:0; line-height:1.55; }
+        .body { flex:1; min-width:0; line-height:1.55; overflow-wrap:anywhere; }
         .body.markdown strong { font-weight:650; }
-        .body code { background:var(--panel-2); padding:1px 5px; border-radius:5px; font-size:13px; }
+        .body code { background:var(--panel-2); padding:1px 5px; border-radius:5px; font-size:13px; overflow-wrap:anywhere; }
         .body ul, .body ol { margin:8px 0; padding-left:22px; }
         .body li { margin:3px 0; }
         .tool-step { font-size:12.5px; color:var(--muted); background:var(--panel);
             border:1px solid var(--border); border-radius:8px; padding:5px 9px;
-            margin:4px 0; display:inline-block; }
+            margin:4px 0; max-width:100%; white-space:pre-wrap; overflow-wrap:anywhere; }
         .sources { margin-top:10px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
         .sources .label { color:var(--muted); font-size:12px; }
         .chip { background:var(--panel-2); border:1px solid var(--border); color:var(--text);
