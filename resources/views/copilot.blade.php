@@ -268,9 +268,15 @@
                         let d = null; try { d = data ? JSON.parse(data) : null; } catch (_) {}
                         if (!d) continue;
                         if (ev === 'tool') {
-                            const q = (d.args && d.args.query) ? ': ' + d.args.query : '';
+                            const a = d.args || {};
+                            const eng = a.engine ? ' (' + a.engine + ')' : '';
+                            let detail = '';
+                            if (a.query) detail = ': ' + a.query;
+                            else if (a.sql) detail = eng + ': ' + a.sql;
+                            else if (a.table) detail = eng + ': ' + a.table;
+                            else if (a.engine) detail = eng + (a.filter ? ': ' + a.filter : '');
                             const s = document.createElement('div'); s.className = 'tool-step';
-                            s.textContent = '🔎 ' + d.name + q; bot.appendChild(s); toolShown = true;
+                            s.textContent = '🔎 ' + d.name + detail; bot.appendChild(s); toolShown = true;
                             chat.scrollTop = chat.scrollHeight;
                         } else if (ev === 'meta') { sources = d.sources || []; passages = d.passages || []; }
                         else if (ev === 'delta') { full += d.text || ''; renderAnswer(bot, full, toolShown); }
